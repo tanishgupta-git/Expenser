@@ -1,17 +1,17 @@
 import React,{useState,useEffect} from 'react'
-import { Keyboard,Text, TextInput, TouchableWithoutFeedback, View,TouchableOpacity,StatusBar } from 'react-native'
+import { Keyboard, Text, TextInput, TouchableWithoutFeedback, View,TouchableOpacity,StatusBar } from 'react-native'
 import DashSvg from '../components/dashSvg'
 import { AntDesign } from '@expo/vector-icons';
 import styles from '../styles/auth';
 
-const Login = ({navigation}) => {
+const Signup = ({navigation}) => {
     const [iconDim, setIcondim] = useState({width:250,height:200});
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
           'keyboardDidShow',
           () => {
-            setIcondim({width:150,height:100}); // or some other action
+            setIcondim({width:0,height:0}); // or some other action
           }
         );
         const keyboardDidHideListener = Keyboard.addListener(
@@ -30,20 +30,25 @@ const Login = ({navigation}) => {
     return (
       <TouchableWithoutFeedback onPress={ () => Keyboard.dismiss()}>
         <View style={styles.container}>
-        
           <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
            <View style={styles.logHeader}>
                <Text style={styles.name}>Expenser</Text>
-               <TouchableOpacity onPress={ () => navigation.navigate("Signup")}><Text style={styles.linkPage}>Sign Up</Text></TouchableOpacity>               
+               <TouchableOpacity onPress={ () => navigation.navigate("Login")}><Text style={styles.linkPage}>Log In</Text></TouchableOpacity>               
            </View>
 
            <View style={styles.formContainer}>
+
                 <View style={styles.dashSvgContainer}>
                         <DashSvg iconDim={iconDim}/>
                 </View>
-                <Text style={styles.textHeading}>Login to your account</Text>
+
+                <Text style={styles.textHeading}>Signup to your account</Text>
                 <View>
+                    <View style={styles.formInputContainer}>
+                        <Text style={styles.formInputLabel}>Your Name</Text>
+                        <TextInput style={styles.formInput} placeholder="John Doe" placeholderTextColor="#caccce" />
+                    </View>
                     <View style={styles.formInputContainer}>
                         <Text style={styles.formInputLabel}>Email</Text>
                         <TextInput style={styles.formInput} placeholder="name@domain.com" placeholderTextColor="#caccce" />
@@ -65,4 +70,4 @@ const Login = ({navigation}) => {
     )
 }
 
-export default Login
+export default Signup;
