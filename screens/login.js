@@ -1,11 +1,39 @@
 import React,{useState,useEffect} from 'react'
-import { Keyboard,Text, TextInput, TouchableWithoutFeedback, View,TouchableOpacity,StatusBar } from 'react-native'
+import { Keyboard,Text, TextInput, TouchableWithoutFeedback, View,TouchableOpacity,StatusBar,Alert } from 'react-native'
 import DashSvg from '../components/dashSvg'
 import { AntDesign } from '@expo/vector-icons';
+import { auth } from '../firebase/config';
 import styles from '../styles/auth';
 
 const Login = ({navigation}) => {
     const [iconDim, setIcondim] = useState({width:250,height:200});
+    const [email,Setemail] = useState();
+    const [password,Setpassword] = useState();
+
+    const handleSubmit = () => {
+      if(!email || !password ) {
+          Alert.alert("Enter email and password");
+          return;
+      }
+      auth.signInWithEmailAndPassword(email, password)
+      .catch((error) => {
+        Alert.alert("email or password is incorrect");
+      });
+
+   }
+
+       // adding a listener for user authentication state
+       useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(userAuth => {
+            if (userAuth) {
+                navigation.replace('Home');
+            }
+        })
+        
+        return unsubscribe;
+    },[])
+
+
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -27,6 +55,8 @@ const Login = ({navigation}) => {
         };
       }, []);
 
+  
+
     return (
       <TouchableWithoutFeedback onPress={ () => Keyboard.dismiss()}>
         <View style={styles.container}>
@@ -46,14 +76,27 @@ const Login = ({navigation}) => {
                 <View>
                     <View style={styles.formInputContainer}>
                         <Text style={styles.formInputLabel}>Email</Text>
-                        <TextInput style={styles.formInput} placeholder="name@domain.com" placeholderTextColor="#caccce" />
+                        <TextInput style={styles.formInput} 
+                               placeholder="name@domain.com" 
+                               placeholderTextColor="#caccce" 
+                               onChangeText={(value) => Setemail(value)}
+                               value={email} 
+                               />
                     </View>
                     <View style={styles.formPasswordContainer}>
                         <View style={styles.formPasswordInput}>
                             <Text style={styles.formInputLabel} >Password</Text>
-                            <TextInput style={styles.formInput} placeholder="**********" placeholderTextColor="#caccce" />
+                            <TextInput style={styles.formInput} 
+                                     placeholder="**********" 
+                                     placeholderTextColor="#caccce"
+                                     onChangeText={(value) => Setpassword(value)}
+                                     value={password} 
+                                     secureTextEntry
+                                     onSubmitEditing={handleSubmit} 
+
+                                      />
                         </View>
-                        <TouchableOpacity style={styles.formsubmitButton}>
+                        <TouchableOpacity onPress={handleSubmit} style={styles.formsubmitButton}>
                             <Text><AntDesign name="right" size={20} color="#ffffff" /></Text>
                         </TouchableOpacity>
                     </View>

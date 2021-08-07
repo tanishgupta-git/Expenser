@@ -1,11 +1,30 @@
 import React,{useState,useEffect} from 'react'
-import { Keyboard, Text, TextInput, TouchableWithoutFeedback, View,TouchableOpacity,StatusBar } from 'react-native'
+import { Keyboard, Text, TextInput, TouchableWithoutFeedback, View,TouchableOpacity,StatusBar,Alert } from 'react-native'
 import DashSvg from '../components/dashSvg'
 import { AntDesign } from '@expo/vector-icons';
 import styles from '../styles/auth';
+import { auth } from '../firebase/config';
 
 const Signup = ({navigation}) => {
     const [iconDim, setIcondim] = useState({width:250,height:200});
+    const [username,Setusername] = useState();
+    const [email,Setemail] = useState();
+    const [password,Setpassword] = useState();
+    
+    const handleSubmit = () => {
+      if(!username && !email && !password) {
+          Alert.alert("All fields are required");
+          return;
+      }
+      auth.createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+         userCredential.user.updateProfile({ displayName: username })
+      })
+      .catch((error) => {
+        Alert.alert("Error in signup");
+      });
+    }
+
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -27,6 +46,8 @@ const Signup = ({navigation}) => {
         };
       }, []);
 
+
+
     return (
       <TouchableWithoutFeedback onPress={ () => Keyboard.dismiss()}>
         <View style={styles.container}>
@@ -47,18 +68,35 @@ const Signup = ({navigation}) => {
                 <View>
                     <View style={styles.formInputContainer}>
                         <Text style={styles.formInputLabel}>Your Name</Text>
-                        <TextInput style={styles.formInput} placeholder="John Doe" placeholderTextColor="#caccce" />
+                        <TextInput style={styles.formInput}
+                         placeholder="John Doe" 
+                         placeholderTextColor="#caccce"
+                         onChangeText={(value) => Setusername(value)}
+                         value={username} 
+
+                         />
                     </View>
                     <View style={styles.formInputContainer}>
                         <Text style={styles.formInputLabel}>Email</Text>
-                        <TextInput style={styles.formInput} placeholder="name@domain.com" placeholderTextColor="#caccce" />
+                        <TextInput style={styles.formInput} 
+                                placeholder="name@domain.com" 
+                               placeholderTextColor="#caccce" 
+                               onChangeText={(value) => Setemail(value)}
+                               value={email} 
+                               />
                     </View>
                     <View style={styles.formPasswordContainer}>
                         <View style={styles.formPasswordInput}>
                             <Text style={styles.formInputLabel} >Password</Text>
-                            <TextInput style={styles.formInput} placeholder="**********" placeholderTextColor="#caccce" />
+                            <TextInput style={styles.formInput} 
+                            placeholder="**********" 
+                            placeholderTextColor="#caccce"
+                            onChangeText={(value) => Setpassword(value)}
+                            value={password} 
+                            secureTextEntry
+                             />
                         </View>
-                        <TouchableOpacity style={styles.formsubmitButton}>
+                        <TouchableOpacity onPress={handleSubmit} style={styles.formsubmitButton}>
                             <Text><AntDesign name="right" size={20} color="#ffffff" /></Text>
                         </TouchableOpacity>
                     </View>
