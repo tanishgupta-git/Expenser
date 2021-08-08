@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import Login from './screens/login';
 import Signup from './screens/signup';
-import Home from './screens/home';
+import HomeStack from './routes/home';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -13,7 +13,7 @@ export default function App() {
         <Stack.Navigator>
             <Stack.Screen name="Login" options={{headerShown: false}} component={Login} />
             <Stack.Screen name="Signup" options={{headerShown: false}} component={Signup} />
-            <Stack.Screen name="Home"  options={{headerShown:false}} component={Home} />
+            <Stack.Screen name="HomePage"  options={{headerShown:false}} component={HomeStack} />
         </Stack.Navigator>
     </NavigationContainer>
   );
