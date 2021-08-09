@@ -30,17 +30,21 @@ export default function HomeStack() {
             return <Ionicons name={iconName} size={size} color={color} />;
 
           },
-          tabBarActiveTintColor: '#FF3378',
+          tabBarActiveTintColor: '#000000',
           tabBarInactiveTintColor: '#caccce',
           tabBarLabelStyle : {
-              fontSize : 15
+              fontSize : 14
+          },
+          tabBarItemStyle:{
+            padding: 5,
+            marginHorizontal:10
+
           },
           tabBarStyle : {
-              padding: 10,
-              height: 70,
-              backgroundColor : '#ffffff'
+              height: 65
           }
         })}
+        
         
          >
     
