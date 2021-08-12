@@ -1,5 +1,6 @@
-import React,{useState} from 'react'
-import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React,{useState,useRef} from 'react'
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View,TextInput } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import TransSvg from '../components/transSvg';
@@ -7,6 +8,15 @@ import TransSvg from '../components/transSvg';
 
 const AddTransaction = ({navigation}) => {
     const [typeTrans,setTypeTrans] = useState();
+    const [transTitle,setTransTitle] = useState();
+
+    const AnimationRef = useRef(null);
+    const _onPress = async (typeTrans) => {
+        if(AnimationRef) {
+          await AnimationRef.current?.fadeOutLeft();
+          setTypeTrans(typeTrans)
+        }
+      }
     return (
         <View style={{backgroundColor:'#FCFCFC',flex:1}}>
 
@@ -20,23 +30,57 @@ const AddTransaction = ({navigation}) => {
             <View style={styles.formQuestions}>
 
             {/* first question */}
-               {!typeTrans && <View>
+               {!typeTrans && 
+               <Animatable.View ref={AnimationRef} duration={500}>
                     <View style={styles.svgContainer}>
                             <TransSvg  />
                     </View>
                     <Text style={styles.questionHead}>What kind of transaction it is ?</Text>
                     <View style={styles.transboxContainer}>
-                        <TouchableOpacity style={styles.transbox} onPress={() => setTypeTrans("Income")}>
+                        <TouchableOpacity style={styles.transbox} onPress={() => _onPress("Income")} >
                                 <AntDesign name="leftcircle" size={34} color="#33C9FF" />
                                 <Text style={styles.transboxText}>Income</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.transbox}  onPress={() => setTypeTrans("Expense")}>
+                        <TouchableOpacity style={styles.transbox}  onPress={() => _onPress("Expense")}>
                                 <AntDesign name="rightcircle" size={34} color="#FF3378" />
                                 <Text style={styles.transboxText}>Expense</Text>
                         </TouchableOpacity>
                     </View>
-               </View>
+               </Animatable.View>
                }
+               {/* second question */}
+               {
+                   typeTrans && 
+                   <View>
+
+                  <View style={styles.transDetails}>
+                      <View>
+                            <AntDesign  name={typeTrans === 'Expense' ? 'rightcircle' : 'leftcircle'} size={34} color={typeTrans === 'Expense' ? '#FF3378' : '#33C9FF'} />
+                            <View>
+                                <Text>Transaction Type</Text>
+                                <Text>{typeTrans}</Text>
+                            </View>
+                      </View>
+                  </View>       
+                  <View style={styles.formPasswordContainer}>
+                                <View style={styles.formPasswordInput}>
+                                    <Text style={styles.formInputLabel} >Payee Name</Text>
+                                    <TextInput style={styles.formInput} 
+                                            placeholder="Enter Payee Name" 
+                                            placeholderTextColor="#caccce"
+                                            onChangeText={(value) => setTransTitle(value)}
+                                            value={transTitle} 
+                                            secureTextEntry
+
+                                            />
+                                </View>
+                                <TouchableOpacity  style={styles.formsubmitButton}>
+                                    <Text><AntDesign name="right" size={20} color="#ffffff" /></Text>
+                                </TouchableOpacity>
+                            </View>
+                    </View>
+               }
+                
             </View>
        </View>
     )
