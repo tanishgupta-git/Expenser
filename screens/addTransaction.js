@@ -1,25 +1,49 @@
 import React,{useState,useRef} from 'react'
-import { StatusBar, StyleSheet, Text, TouchableOpacity, View,TextInput } from 'react-native';
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View,TextInput,Keyboard,TouchableWithoutFeedback,Image,ActivityIndicator } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import TransSvg from '../components/transSvg';
-
+import SharedStyles from '../styles/shared';
 
 const AddTransaction = ({navigation}) => {
     const [typeTrans,setTypeTrans] = useState();
     const [transTitle,setTransTitle] = useState();
+    const [thirdQuestion,setThirdQuestion] = useState(false);
+    const [category,setCategory] = useState();
+    const [amount,setAmount] = useState();
+    const [loading,setLoading] = useState(false);
 
     const AnimationRef = useRef(null);
     const _onPress = async (typeTrans) => {
         if(AnimationRef) {
-          await AnimationRef.current?.fadeOutLeft();
-          setTypeTrans(typeTrans)
+          await AnimationRef.current?.fadeOutUp();
+          setTypeTrans(typeTrans);
         }
       }
-    return (
-        <View style={{backgroundColor:'#FCFCFC',flex:1}}>
 
+   const submitCategory = (category) => {
+       setCategory(category);
+   }
+
+   const submitHandler = () => {
+    Keyboard.dismiss();   
+    setLoading(true);
+    navigation.replace('TransDetail');
+   }
+
+    return (
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        
+        <View style={styles.container}>
+
+           {
+            loading && 
+            <View style={SharedStyles.loadingContainer}> 
+                    <ActivityIndicator size="large" color='#FF3378' />
+                </View>
+
+             }
             <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -48,47 +72,126 @@ const AddTransaction = ({navigation}) => {
                     </View>
                </Animatable.View>
                }
+
+
+
                {/* second question */}
                {
-                   typeTrans && 
-                   <View>
+                  typeTrans 
+                   && 
+                <View style={{flex:1,justifyContent:'space-between'}}>
 
                   <View style={styles.transDetails}>
-                      <View>
-                            <AntDesign  name={typeTrans === 'Expense' ? 'rightcircle' : 'leftcircle'} size={34} color={typeTrans === 'Expense' ? '#FF3378' : '#33C9FF'} />
-                            <View>
-                                <Text>Transaction Type</Text>
-                                <Text>{typeTrans}</Text>
+                      <View style={styles.transDetail}>
+                            <AntDesign  name={typeTrans === 'Expense' ? 'rightcircle' : 'leftcircle'} size={50} color={typeTrans === 'Expense' ? '#FF3378' : '#33C9FF'} />
+                            <View style={styles.transTextContainer} >
+                                <Text style={styles.transTextHead}>Transaction Type</Text>
+                                <Text style={styles.transText}>{typeTrans}</Text>
                             </View>
                       </View>
-                  </View>       
-                  <View style={styles.formPasswordContainer}>
-                                <View style={styles.formPasswordInput}>
-                                    <Text style={styles.formInputLabel} >Payee Name</Text>
-                                    <TextInput style={styles.formInput} 
+                      {
+                          thirdQuestion && 
+                          <View style={styles.transDetail}>
+                          { category ? ( category=== 'Cash' ?                                
+                          <View style={styles.transCatimageContainer}>
+                                    <Image style={styles.transCatimage} source={require("../assets/cash.png")}/>
+                                </View> 
+                                :
+                                <View style={styles.transCatimageContainer}>
+                                    <Image style={styles.transCatimage} source={require("../assets/bank.png")} />
+                                </View>
+                                 ) 
+                                :
+                                <View style={styles.transCatimagePlaceholder}></View>
+                                }
+                          <View style={styles.transTextContainer} >
+                                <Text style={styles.transTextHead}>Payee Name</Text>
+                                <Text style={styles.transText}>{transTitle}</Text>
+                            </View>
+                          </View>
+                      }
+                  </View>  
+
+                { !thirdQuestion 
+                     &&       
+                  <View style={styles.inputFormContainer}>
+                                <View style={styles.textInputContainer}>
+                                    <Text style={styles.textInputLabel} >Payee Name</Text>
+                                    <TextInput style={styles.textInput} 
                                             placeholder="Enter Payee Name" 
-                                            placeholderTextColor="#caccce"
+                                            placeholderTextColor="#DFE0E3"
                                             onChangeText={(value) => setTransTitle(value)}
                                             value={transTitle} 
-                                            secureTextEntry
+                                            autoFocus
 
                                             />
                                 </View>
-                                <TouchableOpacity  style={styles.formsubmitButton}>
+                                <TouchableOpacity onPress={() => setThirdQuestion(true)} style={transTitle ? styles.formsubmitButton : {...styles.formsubmitButton ,backgroundColor:'#CFD4E6'}} disabled={!transTitle}>
                                     <Text><AntDesign name="right" size={20} color="#ffffff" /></Text>
                                 </TouchableOpacity>
-                            </View>
+                 </View>
+                }
+           {/* third question  */}
+            { (thirdQuestion && !category ) && 
+             <View>
+                    <Text style={styles.questionHead}>Choose The Category</Text>
+                    <View style={styles.transboxContainer}>
+                        <TouchableOpacity style={styles.transbox} onPress={() => submitCategory("Bank")}>
+                                <View style={styles.transCatimageContainer}>
+                                    <Image style={styles.transCatimage} source={require("../assets/bank.png")} />
+                                </View>
+                                <Text style={styles.transboxText}>Bank</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.transbox} onPress={() => submitCategory("Cash")}>
+                                <View style={styles.transCatimageContainer}>
+                                    <Image style={styles.transCatimage} source={require("../assets/cash.png")}/>
+                                </View>
+                                <Text style={styles.transboxText}>Cash</Text>
+                        </TouchableOpacity>
                     </View>
+           </View>
+        }
+
+        {/* fourth question */}
+        { (thirdQuestion && category) &&
+            <View style={styles.inputFormContainer}>
+                                <View style={styles.textInputContainer}>
+                                    <Text style={styles.textInputLabel} >Enter Amount</Text>
+                                    <TextInput style={styles.textInput} 
+                                            placeholder="Amount in Rs." 
+                                            placeholderTextColor="#DFE0E3"
+                                            onChangeText={(value) => setAmount(value)}
+                                            value={amount}
+                                            keyboardType='numeric' 
+                                            autoFocus
+                                            />
+                                </View>
+                                <TouchableOpacity onPress={submitHandler} style={amount ? {...styles.formsubmitButton,width:100} : {...styles.formsubmitButton ,backgroundColor:'#CFD4E6',width:100}} disabled={!amount}>
+                                    <Text style={styles.amountButtontext}>Finish</Text>
+                                </TouchableOpacity>
+        </View>
+        }
+
+
+
+
+                </View>
                }
-                
+              
+
             </View>
        </View>
+    </TouchableWithoutFeedback>
     )
 }
 
 export default AddTransaction
 
 const styles = StyleSheet.create({
+    container : {
+        flex: 1,
+        backgroundColor : '#ffffff'
+    },
     header: {
      flexDirection:'row',
      alignItems:'center',
@@ -110,10 +213,11 @@ const styles = StyleSheet.create({
    questionHead : {
        fontSize:25,
        fontWeight : 'bold',
-       width: 200
+       width:260
    },
    formQuestions : {
-       padding: 30
+       padding: 30,
+       flex:1
    },
    transboxContainer:{ 
        flexDirection : 'row',
@@ -132,5 +236,84 @@ const styles = StyleSheet.create({
    transboxText:{
        fontSize:20,
        fontWeight:'bold'
-   }
+   },
+   transDetails : {
+     justifyContent : 'space-between'
+   },
+   transTextContainer : {
+       justifyContent : 'space-between',
+       marginLeft : 20
+   },
+   transDetail : {
+       flexDirection : 'row',   
+       alignItems:'center',
+       marginBottom : 30
+   },
+   transTextHead : {
+       color: '#bfbfbf',
+       fontWeight : 'bold',
+       marginBottom : 5
+   },
+   transText : {
+       fontWeight : 'bold',
+       fontSize : 22
+   },
+   inputFormContainer : {
+       flexDirection : 'row',
+       alignItems:'center'
+   },
+   textInputContainer : {
+       flex: 1
+   },
+   textInput : {
+    paddingVertical:5,
+    fontSize : 22,
+    fontWeight : 'bold',
+    borderBottomWidth : 2,
+    color: '#000000',
+    borderColor: '#DFE0E3'
+   },
+   textInputLabel :{
+    color: '#bfbfbf',
+    fontWeight : 'bold',
+    marginBottom : 5       
+   },
+   formsubmitButton : {
+    backgroundColor:'#FF3378',
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius:15,
+    marginHorizontal:5,
+    width: 50,
+    height: 50
+   },
+   transCatimageContainer : {
+       width: 50,
+       height:50,
+       backgroundColor :'#cccccc',
+       justifyContent : 'center',
+       alignItems : 'center',
+       borderRadius:30
+       
+   },
+   transCatimage : {
+       width: 30,
+       height: 30
+   },
+   transCatimagePlaceholder:{
+    width: 50,
+    height:50,
+    backgroundColor :'#EFEFF0',
+    justifyContent : 'center',
+    alignItems : 'center',
+    borderRadius:25,
+    borderWidth : 2,
+    borderColor : '#cccccc',
+    borderStyle:'dashed'
+   },
+   amountButtontext : {
+       color:'#ffffff',
+       fontSize:19,
+       fontWeight:'bold' 
+    }
 })
