@@ -5,6 +5,8 @@ import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import TransSvg from '../components/transSvg';
 import SharedStyles from '../styles/shared';
+import { db,auth } from '../firebase/config';
+import moment from 'moment';
 
 const AddTransaction = ({navigation}) => {
     const [typeTrans,setTypeTrans] = useState();
@@ -26,10 +28,20 @@ const AddTransaction = ({navigation}) => {
        setCategory(category);
    }
 
-   const submitHandler = () => {
+   const submitHandler = async () => {
     Keyboard.dismiss();   
+    const user = auth?.currentUser?.email;
+    const date = moment(new Date()).format('DD-MMM-YYYY')
     setLoading(true);
-    navigation.replace('TransDetail');
+    const docRef = await db.collection('expenses').doc(user).collection(date).add({
+        title : transTitle,
+        category : category,
+        amount,
+        type :typeTrans
+    })
+    navigation.replace('TransDetail',{
+        id : docRef.id
+    });
    }
 
     return (
@@ -161,7 +173,7 @@ const AddTransaction = ({navigation}) => {
                                             placeholder="Amount in Rs." 
                                             placeholderTextColor="#DFE0E3"
                                             onChangeText={(value) => setAmount(value)}
-                                            value={amount}
+                                            value={amount}                            
                                             keyboardType='numeric' 
                                             autoFocus
                                             />
@@ -190,7 +202,7 @@ export default AddTransaction
 const styles = StyleSheet.create({
     container : {
         flex: 1,
-        backgroundColor : '#ffffff'
+        backgroundColor : '#FCFCFC'
     },
     header: {
      flexDirection:'row',
