@@ -20,21 +20,22 @@ export default styles = StyleSheet.create({
     name : {
         color: '#6A6D76',
         fontSize : 22,
-        fontWeight : '900'
+        fontWeight : '900',
     },
     linkPage : {
         fontSize : 15,
         color : '#FF3378'
     },
     formContainer : {
-        flex:1,
-        padding: 20
+        flex:1
     },
     formInputContainer:{
-      marginVertical:20
+      margin:20,
+      marginVertical:15
     },
     formPasswordContainer:{
-        marginVertical:20,
+        margin:20,
+        marginVertical:15,
         flexDirection:'row',
         alignItems:'center',
     
@@ -54,7 +55,7 @@ export default styles = StyleSheet.create({
     },
     textHeading : {
         fontSize :25,
-        marginVertical:10,
+        marginLeft:20,
         fontWeight:'bold',
         color: '#000000',
 
@@ -70,7 +71,7 @@ export default styles = StyleSheet.create({
         fontWeight:'bold'
     },
     dashSvgContainer : {
-    
-        alignItems:'center'
+        alignItems:'center',
+        paddingBottom:20
     }
 })

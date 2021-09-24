@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {ScrollView,StatusBar,StyleSheet,Text,TouchableOpacity,View} from "react-native";
+import {ScrollView,StatusBar,StyleSheet,Text,TouchableOpacity,View,Image} from "react-native";
 import { Feather } from "@expo/vector-icons";
 import homeStyles from "../styles/home";
 import { auth, db } from "../firebase/config";
@@ -35,13 +35,28 @@ const Home = ({ navigation }) => {
           <Feather name="search" size={24} color="black" />
         </TouchableOpacity>
       </View>
+      {/* chooose date */}
       <View>
-          {transactions.map((transaction) => (
-            <View key={transaction.id}>
-               <Text>{transaction.title}</Text>
-            </View>
-          ))}
+
       </View>
+      {/* list transactions on that date */}
+      <View>
+          {
+            transactions.map((transaction) => (
+            <View key={transaction.id}>
+               {
+                 transaction.category === 'Bank' ?
+                 <Image style={styles.transCatimage} source={require("../assets/bank.png")} />
+                 :
+                 <Image style={styles.transCatimage} source={require("../assets/cash.png")}/> 
+               }
+               <Text>{transaction.title}</Text>
+               <Text>{transaction.amount}</Text>
+            </View>
+          ))
+          }
+      </View>
+      {/* total transaction on that day */}
       <View>
          <Text>Total</Text>
          <Text></Text>

@@ -39,7 +39,7 @@ const Login = ({navigation}) => {
         const keyboardDidShowListener = Keyboard.addListener(
           'keyboardDidShow',
           () => {
-            setIcondim({width:150,height:100}); // or some other action
+            setIcondim({width:0,height:0}); // or some other action
           }
         );
         const keyboardDidHideListener = Keyboard.addListener(

@@ -26,10 +26,10 @@ export default styles = StyleSheet.create({
    questionHead : {
        fontSize:25,
        fontWeight : 'bold',
-       width:260
+       width:260,
+       marginLeft:20
    },
    formQuestions : {
-       padding: 30,
        flex:1
    },
    transboxContainer:{ 
@@ -38,8 +38,8 @@ export default styles = StyleSheet.create({
        paddingVertical:30
    },
    transbox : {
-       width: 150,
-       height: 180,
+       width: 140,
+       height: 170,
        backgroundColor:'#ffffff',
        borderRadius:20,
        elevation:2,
