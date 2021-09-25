@@ -1,30 +1,60 @@
 import React, { useState, useEffect } from "react";
-import {ScrollView,StatusBar,StyleSheet,Text,TouchableOpacity,View,Image} from "react-native";
+import { ScrollView,StatusBar, StyleSheet,Text,TouchableOpacity, View, ActivityIndicator} from "react-native";
 import { Feather } from "@expo/vector-icons";
 import homeStyles from "../styles/home";
 import { auth, db } from "../firebase/config";
 import moment from "moment";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import Transaction from "../components/transaction";
 
 const Home = ({ navigation }) => {
   const [transactions, setTransactions] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [date, setDate] = useState(new Date());
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    setDate(date);
+    hideDatePicker();
+  };
 
   useEffect(() => {
-    const user = auth?.currentUser?.email;
-    const date = moment(new Date()).format("DD-MMM");
-    const yearMonth = moment(new Date()).format("YYYY-MMM");
+    let unsubscribe,unsubscribe2;
+    (async () => {
+      setLoading(true);
+      const user = auth?.currentUser?.email;
+      const expDate = moment(date).format("DD-MMM");
+      const expYearMonth = moment(date).format("YYYY-MMM");
 
-    const unsubscribe = db
-    .collection("expenses")
-    .doc(user)
-    .collection(yearMonth)
-    .doc(date)
-    .collection('transactions').onSnapshot((snap) => {
-     setTransactions(snap.docs.map((doc) => ({id:doc.id,...doc.data()})));
-    })
+      unsubscribe = db
+        .collection("expenses")
+        .doc(user)
+        .collection(expYearMonth)
+        .doc(expDate)
+        .collection("transactions")
+        .orderBy('timeStamp','desc')
+        .onSnapshot((snap) => {
+          setTransactions(
+            snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+          );
+        });
 
+      unsubscribe2  = db.collection("expenses").doc(user).collection(expYearMonth).doc(expDate).onSnapshot((totalDocref) => {
+        if (totalDocref) {
+          setTotal(totalDocref?.data()?.total);
+       }
+      })
+
+      setLoading(false);
+      
+    })();
     return () => unsubscribe();
- 
-  }, []);
+  }, [date]);
 
   return (
     <ScrollView style={homeStyles.container}>
@@ -35,36 +65,92 @@ const Home = ({ navigation }) => {
           <Feather name="search" size={24} color="black" />
         </TouchableOpacity>
       </View>
-      {/* chooose date */}
-      <View>
 
-      </View>
+
+      {/* chooose date */}
+      <TouchableOpacity style={styles.dateButton}  onPress={() => setDatePickerVisibility(true)} >
+        <Text style={styles.dateButtonText} >Choose Date</Text>
+      </TouchableOpacity>
+
+    {/* loader Container */}
+      {loading && (
+          <ActivityIndicator size="large" color="#FF3378" />
+      )}
+
       {/* list transactions on that date */}
       <View>
-          {
-            transactions.map((transaction) => (
-            <View key={transaction.id}>
-               {
-                 transaction.category === 'Bank' ?
-                 <Image style={styles.transCatimage} source={require("../assets/bank.png")} />
-                 :
-                 <Image style={styles.transCatimage} source={require("../assets/cash.png")}/> 
-               }
-               <Text>{transaction.title}</Text>
-               <Text>{transaction.amount}</Text>
-            </View>
-          ))
-          }
+       {
+         !transactions.length &&
+          <View style={styles.noTransactions}>
+             <Text style={styles.noTransactionsText}>No transactions on this date</Text>
+          </View>
+       }
+        {
+              transactions.map((transaction) => (
+                   <Transaction key={transaction.id} transaction={transaction} />
+            ))
+        }
+        
       </View>
       {/* total transaction on that day */}
-      <View>
-         <Text>Total</Text>
-         <Text></Text>
+      <View style={styles.totalContainer}>
+        <Text style={styles.totalHeading}>Total</Text>
+        <Text style={styles.totalAmount}>Rs. {total  ? total : 0}</Text>
       </View>
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+        maximumDate={new Date()}
+        minimumDate={new Date(2021, 8, 1)}
+        date={date}
+      />
     </ScrollView>
   );
 };
 
 export default Home;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  dateButton : {
+    width: 150,
+    backgroundColor : '#F6F6F7',
+    padding: 15,
+    borderRadius : 10,
+    justifyContent : 'center',
+    alignItems : 'center',
+    marginHorizontal:20,
+    marginBottom:10
+  },
+  dateButtonText : {
+   color: '#000000',
+   fontSize : 18
+  },
+  noTransactions : {
+    height: 350,
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  noTransactionsText : {
+    fontSize:18,
+    color: '#ADAEB4'
+
+  },
+  totalContainer : {
+    flexDirection : 'row',
+    justifyContent : 'space-between',
+    paddingHorizontal:20,
+    marginVertical :40
+  },
+  totalHeading : {
+    color : '#ADAEB4',
+    fontSize:18
+  },
+  totalAmount : {
+    color:  '#000000',
+    fontSize:18,
+    fontWeight:'bold',
+    marginRight:5
+  }
+});

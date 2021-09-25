@@ -4,6 +4,7 @@ import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import SharedStyles from "../styles/shared";
 import { db, auth } from "../firebase/config";
+import firebase from "firebase";
 import styles from "../styles/form";
 import moment from "moment";
 import QuestTransType from "../components/questTransType";
@@ -42,6 +43,7 @@ const AddTransaction = ({ navigation }) => {
         category: category,
         amount,
         type: typeTrans,
+        timeStamp : firebase.firestore.FieldValue.serverTimestamp()
       });
  
     // getting the previous amount for next update
@@ -50,21 +52,27 @@ const AddTransaction = ({ navigation }) => {
     .doc(user)
     .collection(yearMonth)
     .doc(date)
-    .collection("total")
-    .doc(typeTrans)
     .get()
 
-    const newAmount = (prevAmountDoc.data()?.value) ? ( prevAmountDoc.data().value + Number(amount)) : Number(amount);
+    // if added for first time then intialized it with zero 
+    let Income = (prevAmountDoc.data()?.income) ? prevAmountDoc.data().income : 0;
+    let Expense = (prevAmountDoc.data()?.expense) ? prevAmountDoc.data().expense : 0;
+    // update the new values
+    if (typeTrans === 'Income') {
+       Income = Income + Number(amount);
+    }else {
+       Expense = Expense + Number(amount)
+    }
 
     //  updating the document with new amount value
     await db.collection("expenses")
     .doc(user)
     .collection(yearMonth)
     .doc(date)
-    .collection("total")
-    .doc(typeTrans)
     .set({
-      value : newAmount
+      income : Income,
+      expense : Expense,
+      total : Income - Expense
     })
     navigation.replace("TransDetail", {
       id: docRef.id,
