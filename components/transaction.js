@@ -62,10 +62,12 @@ const styles = StyleSheet.create({
       },
       transactionIncome : {
           fontSize:18,
-          color: '#17e821'
+          color: '#17e821',
+          fontWeight : 'bold'
       },
       transactionExpense : {
           fontSize : 18,
-          color: '#ff0000'
+          color: '#ff0000',
+          fontWeight : 'bold'
       }
 })
