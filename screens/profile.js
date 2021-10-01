@@ -13,7 +13,8 @@ const Profile = ({navigation}) => {
     const [imageLoading,setImageLoading] = useState(false);
     const [prevImageuuid,setPrevImageuuid] = useState(null);
     const [imageUploading,setImageUploading] = useState(false);
-      
+    
+    // checking the permission
     useEffect(() => {
         async function checkPermission() {
         if (Platform.OS !== "web") {
@@ -21,18 +22,18 @@ const Profile = ({navigation}) => {
               status,
             } = await ImagePicker.requestMediaLibraryPermissionsAsync();
             if (status !== "granted") {
-              alert("Sorry, we need camera roll permissions to make this work!");
+              alert("Sorry, Expenser need camera roll permissions to make this work!");
             }
           }
         }
         checkPermission();
     },[])
     
+    // loading the intial data
     useEffect(() => {
       setImageLoading(true);
-      console.log(auth?.currentUser.email)
       db.collection("usersimage").doc(auth?.currentUser.email).get().then( (doc) => {
-          console.log(doc.data());
+   
           if(!!doc.data()) {
             setImage(doc.data().url);
             setPrevImageuuid(doc.data().uuid)
@@ -46,11 +47,12 @@ const Profile = ({navigation}) => {
         navigation.navigate('Login');
     }
 
+    // function for handling the picked image
       const  _handleImagePicked = async (pickerResult) => {
         try {
           setImageUploading(true)
           if (!pickerResult.cancelled) {
-            console.log(pickerResult);
+           
             const { uploadUrl,uuid } = await uploadImageAsync(pickerResult.uri);
             await db.collection("usersimage").doc(auth?.currentUser.email).set({
               url : uploadUrl,
@@ -75,16 +77,16 @@ const Profile = ({navigation}) => {
         }
       };
 
+     // function for capturing image
       const _takePhoto = async () => {
         let pickerResult = await ImagePicker.launchCameraAsync({
           allowsEditing: true,
           aspect: [4, 3],
         });
-    
         _handleImagePicked(pickerResult);
       };
     
-
+     // function for picking image from storage
      const  _pickImage = async () => {
         let pickerResult = await ImagePicker.launchImageLibraryAsync({
           allowsEditing: true,
@@ -96,7 +98,7 @@ const Profile = ({navigation}) => {
         _handleImagePicked(pickerResult);
       };
     
-    
+   // function for uploading image asynchronus using xmlHttp 
     const uploadImageAsync = async (uri) => {
 
       const blob = await new Promise((resolve, reject) => {
@@ -131,6 +133,7 @@ const Profile = ({navigation}) => {
             {
               imageUploading && 
               <View style={SharedStyles.loadingContainer}>
+                <Text style={SharedStyles.uploadingText}>Uploading ...</Text>
                 <ActivityIndicator size="large" color="#FF3378" />
               </View>
             }
@@ -143,7 +146,7 @@ const Profile = ({navigation}) => {
                         image ? 
                         <View>
                         
-                         <Image source={{ uri: image }} style={{ width: 250, height: 250 }} />
+                         <Image source={{ uri: image }} style={{ width: 200, height: 200,borderRadius:140 }} />
                         </View> 
                         :
                         <View style={styles.imagePlaceholder}>

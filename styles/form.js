@@ -6,7 +6,7 @@ export default styles = StyleSheet.create({
         backgroundColor : '#FCFCFC'
     },
     header: {
-     flexDirection:'row',
+     flexDirection:'row',   
      alignItems:'center',
      padding:10,
      paddingLeft:20,

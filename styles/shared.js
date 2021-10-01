@@ -13,5 +13,10 @@ export default SharedStyles = StyleSheet.create({
         backgroundColor : '#cccccc',
         opacity: 0.7,
         zIndex :100          
+      },
+      uploadingText : {
+        color: '#ffffff',
+        fontSize : 20,
+        marginBottom : 20
       }
 });
