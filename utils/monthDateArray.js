@@ -13,7 +13,7 @@ const checkLeapYear = (y) => {
 }
 
 // helping function for getting month date array
-const monthDateArrayHelper = (month,year) => {
+const monthDateArrayHelper = (year,month) => {
 
     if ( month === 'Feb') {
        if ( checkLeapYear(Number(year))) {
@@ -30,10 +30,9 @@ const monthDateArrayHelper = (month,year) => {
 }
 
 export const getMonthDateArray = (year,month) => {
-    let dateArray  = monthDateArrayHelper(month,year);
+    let dateArray  = monthDateArrayHelper(year,month);
     let currentDate = new Date();
     // if the month is currently going on
-    console.log(numberToMonth[currentDate.getMonth()],month)
     if (numberToMonth[currentDate.getMonth()] === month) {
 
         while(currentDate.getDate() < Number(dateArray[dateArray.length - 1])) {
@@ -44,9 +43,10 @@ export const getMonthDateArray = (year,month) => {
     return dateArray;
 }
 
-export const getMonthTransactionObject = (month,year) => {
+export const getMonthTransactionObject = (year,month) => {
+
       let obj = {};
-      let dateArray = getMonthDateArray(month,year); 
+      let dateArray = getMonthDateArray(year,month); 
       for (let i = 0;i < dateArray.length;i++) {
           obj[dateArray[i]] = 0;
       }
