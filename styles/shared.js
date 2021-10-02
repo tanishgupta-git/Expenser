@@ -18,5 +18,19 @@ export default SharedStyles = StyleSheet.create({
         color: '#ffffff',
         fontSize : 20,
         marginBottom : 20
+      },
+      dateButton : {
+        width: 150,
+        backgroundColor : '#FF3378',
+        padding: 15,
+        borderRadius : 10,
+        justifyContent : 'center',
+        alignItems : 'center',
+        marginHorizontal:20,
+        marginVertical:10
+      },
+      dateButtonText : {
+       color: '#FFFFFF',
+       fontSize : 18
       }
 });

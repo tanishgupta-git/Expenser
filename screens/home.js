@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ScrollView,StatusBar, StyleSheet,Text,TouchableOpacity, View, ActivityIndicator} from "react-native";
 import { Feather } from "@expo/vector-icons";
 import homeStyles from "../styles/home";
+import sharedStyles from "../styles/shared";
 import { auth, db } from "../firebase/config";
 import moment from "moment";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -68,8 +69,8 @@ const Home = ({ navigation }) => {
 
 
       {/* chooose date */}
-      <TouchableOpacity style={styles.dateButton}  onPress={() => setDatePickerVisibility(true)} >
-        <Text style={styles.dateButtonText} >Choose Date</Text>
+      <TouchableOpacity style={sharedStyles.dateButton}  onPress={() => setDatePickerVisibility(true)} >
+        <Text style={sharedStyles.dateButtonText} >Choose Date</Text>
       </TouchableOpacity>
 
     {/* loader Container */}
@@ -113,20 +114,6 @@ const Home = ({ navigation }) => {
 export default Home;
 
 const styles = StyleSheet.create({
-  dateButton : {
-    width: 150,
-    backgroundColor : '#F6F6F7',
-    padding: 15,
-    borderRadius : 10,
-    justifyContent : 'center',
-    alignItems : 'center',
-    marginHorizontal:20,
-    marginBottom:10
-  },
-  dateButtonText : {
-   color: '#000000',
-   fontSize : 18
-  },
   noTransactions : {
     height: 350,
     justifyContent:'center',

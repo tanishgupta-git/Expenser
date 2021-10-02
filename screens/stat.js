@@ -7,14 +7,26 @@ import { db,auth } from '../firebase/config';
 import moment from "moment";
 import  { getMonthDateArray,getMonthTransactionObject } from '../utils/monthDateArray';
 import formStyles from '../styles/form';
+import sharedStyles from '../styles/shared';
 import { AntDesign } from '@expo/vector-icons';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const Stat = () => {
-    const [date, setDate] = useState(new Date());
+    const [date, setDate] = useState();
     const [transObject,setTransObject] = useState({ income : {},expense : {}});
     const [chartLoading,setChartLoading] = useState(false);
     const [netInMonth,setNetInMonth] = useState({ Income : 0, Expense : 0});
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+      };
     
+      const handleConfirm = (date) => {
+        setDate(date);
+        hideDatePicker();
+      };
+
 
     // getting the data for chart
     useEffect(() => {
@@ -43,7 +55,7 @@ const Stat = () => {
           setChartLoading(false);
           setNetInMonth({Income : netIncome,Expense : netExpense})
         })
-    },[])
+    },[date])
 
 
     return (
@@ -54,7 +66,14 @@ const Stat = () => {
                     <Feather name="search" size={24} color="black" />
                 </TouchableOpacity>
             </View>
+
+
             <View>
+            {/* chooose date */}
+            <TouchableOpacity style={sharedStyles.dateButton}  onPress={() => setDatePickerVisibility(true)} >
+                <Text style={sharedStyles.dateButtonText} >Choose Date</Text>
+            </TouchableOpacity>
+
             <View style={styles.netContainer}>
                 <Text style={styles.netHeading}>Net Balance</Text>
                 <Text style={styles.netAmount}>{netInMonth.Income - netInMonth.Expense }</Text>
@@ -137,6 +156,17 @@ const Stat = () => {
                         </View>
                 </View>
             </View>
+             
+            <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                mode="date"
+                onConfirm={handleConfirm}
+                onCancel={hideDatePicker}
+                maximumDate={new Date()}
+                minimumDate={new Date(2021, 8, 1)}
+                date={date}
+            />
+         
 
 </View>
         </ScrollView>
@@ -214,5 +244,12 @@ const styles = StyleSheet.create({
         color: '#808080',
         marginBottom : 10,
         fontSize : 14 
+    },
+    pickerContainer : {
+        backgroundColor : '#00000057',
+        flex : 1,
+        justifyContent : 'center',
+        alignItems : 'center',
+        padding:20
     }
 })
