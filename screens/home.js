@@ -53,7 +53,10 @@ const Home = ({ navigation }) => {
       setLoading(false);
       
     })();
-    return () => unsubscribe();
+    return () => { 
+      unsubscribe();
+      unsubscribe2();
+    }
   }, [date]);
 
   return (

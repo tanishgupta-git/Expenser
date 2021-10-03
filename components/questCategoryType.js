@@ -2,10 +2,10 @@ import React from 'react'
 import {Text, View, TouchableOpacity,Image } from 'react-native'
 import styles from '../styles/form';
 
-const QuestCategoryType = ({submitCategory}) => {
+const QuestCategoryType = ({submitCategory,titleShow}) => {
     return (
         <View>
-                <Text style={styles.questionHead}>Choose The Category</Text>
+                {titleShow && <Text style={styles.questionHead}>Choose The Category</Text>}
                 <View style={styles.transboxContainer}>
                     <TouchableOpacity style={styles.transbox} onPress={() => submitCategory("Bank")}>
                             <View style={styles.transCatimageContainer}>

@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer : {
       flexDirection : 'row',
-      justifyContent : 'space-around'
+      justifyContent : 'space-between'
     },
     photoButton : {
       backgroundColor :  '#F3F3F4',

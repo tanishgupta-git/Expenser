@@ -155,7 +155,7 @@ const AddTransaction = ({ navigation }) => {
               )}
               {/* third question  */}
               {thirdQuestion && !category && (
-                <QuestCategoryType submitCategory={submitCategory} />
+                <QuestCategoryType submitCategory={submitCategory} titleShow={true}/>
               )}
 
               {/* fourth question */}
