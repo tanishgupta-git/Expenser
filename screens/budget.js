@@ -1,15 +1,15 @@
 import React from 'react'
 import { StyleSheet, Text, View,TouchableOpacity} from 'react-native'
 import homeStyles from '../styles/home';
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
-const Budget = () => {
+const Budget = ({navigation}) => {
     return (
         <View style={homeStyles.container}>
             <View style={homeStyles.header}>
                 <Text style={homeStyles.headingPage}>Budget</Text>
-                <TouchableOpacity>
-                    <Feather name="search" size={24} color="black" />
+                <TouchableOpacity onPress={() => navigation.navigate("CreateBudget")}>
+                        <Ionicons name="add" size={32} color="black" />
                 </TouchableOpacity>
             </View>
         </View>

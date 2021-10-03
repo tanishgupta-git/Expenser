@@ -101,7 +101,7 @@ const AddTransaction = ({ navigation }) => {
           {!typeTrans && <QuestTransType setTypeTrans={setTypeTrans} />}
 
           {typeTrans && (
-            <View style={{ flex: 1, justifyContent: "space-between" }}>
+            <View style={{ flex: 1, justifyContent: "space-between",padding:20 }}>
               <View style={styles.transDetails}>
                 <View style={styles.transDetail}>
                   <AntDesign

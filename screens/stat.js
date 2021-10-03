@@ -1,7 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import { StyleSheet, Text, View,TouchableOpacity,Dimensions,ActivityIndicator,ScrollView } from 'react-native'
 import homeStyles from '../styles/home';
-import { Feather } from '@expo/vector-icons';
 import { LineChart} from "react-native-chart-kit"; 
 import { db,auth } from '../firebase/config';
 import moment from "moment";
@@ -62,9 +61,6 @@ const Stat = () => {
         <ScrollView style={styles.container}>
             <View style={homeStyles.header}>
                 <Text style={homeStyles.headingPage}>Stat</Text>
-                <TouchableOpacity>
-                    <Feather name="search" size={24} color="black" />
-                </TouchableOpacity>
             </View>
 
 

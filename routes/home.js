@@ -1,17 +1,33 @@
 import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Home from "../screens/home";
 import Stat from "../screens/stat";
 import Budget from "../screens/budget";
 import Profile from "../screens/profile";
+import CreateBudget from "../screens/createBudget";
 
 const CreatePlaceholder = () => (
   <View style={{ flex: 1, backgroundColor: "blue" }} />
 );
 
 const Tab = createBottomTabNavigator();
+
+
+// Stack navigator for the budget screen
+const BudgetStack = createNativeStackNavigator();
+
+function BudgetStackScreen() {
+  return (
+    <BudgetStack.Navigator>
+      <BudgetStack.Screen options={{headerShown: false}} name="Budget" component={Budget} />
+      <BudgetStack.Screen name="CreateBudget" component={CreateBudget} />
+    </BudgetStack.Navigator>
+  );
+}
+
 
 const CustomTabBarButton = ({ children, onPress }) => (
   <TouchableOpacity
@@ -110,7 +126,7 @@ export default function HomeStack() {
 
       {/* budget screen */}
       <Tab.Screen
-        name="Budget"
+        name="BudgetStack"
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
@@ -126,7 +142,7 @@ export default function HomeStack() {
             </View>
           ),
         }}
-        component={Budget}
+        component={BudgetStackScreen}
       />
 
       {/* profile screen */}

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView,StatusBar, StyleSheet,Text,TouchableOpacity, View, ActivityIndicator} from "react-native";
-import { Feather } from "@expo/vector-icons";
 import homeStyles from "../styles/home";
 import sharedStyles from "../styles/shared";
 import { auth, db } from "../firebase/config";
@@ -62,9 +61,6 @@ const Home = ({ navigation }) => {
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <View style={homeStyles.header}>
         <Text style={homeStyles.headingPage}>Daily transaction</Text>
-        <TouchableOpacity onPress={() => auth.signOut()}>
-          <Feather name="search" size={24} color="black" />
-        </TouchableOpacity>
       </View>
 
 
