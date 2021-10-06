@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import { StyleSheet, Text, View,TouchableOpacity,Dimensions,ActivityIndicator,ScrollView } from 'react-native'
+import { StyleSheet, Text, View,TouchableOpacity,Dimensions,ActivityIndicator,ScrollView,Modal,TouchableWithoutFeedback } from 'react-native'
 import homeStyles from '../styles/home';
 import { LineChart} from "react-native-chart-kit"; 
 import { db,auth } from '../firebase/config';
@@ -8,22 +8,20 @@ import  { getMonthDateArray,getMonthTransactionObject } from '../utils/monthDate
 import formStyles from '../styles/form';
 import sharedStyles from '../styles/shared';
 import { AntDesign } from '@expo/vector-icons';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import MonthPicker from 'react-native-month-picker';
+
 
 const Stat = () => {
-    const [date, setDate] = useState();
+    const [date, setDate] = useState(new Date());
+    const [selectedDate,setSelectedDate] = useState();
     const [transObject,setTransObject] = useState({ income : {},expense : {}});
     const [chartLoading,setChartLoading] = useState(false);
     const [netInMonth,setNetInMonth] = useState({ Income : 0, Expense : 0});
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
-    const hideDatePicker = () => {
-        setDatePickerVisibility(false);
-      };
     
-      const handleConfirm = (date) => {
-        setDate(date);
-        hideDatePicker();
+      const handleConfirm = () => {
+        setDate(selectedDate);
+        setDatePickerVisibility(false);
       };
 
 
@@ -65,11 +63,39 @@ const Stat = () => {
 
 
             <View>
-            {/* chooose date */}
-            <TouchableOpacity style={sharedStyles.dateButton}  onPress={() => setDatePickerVisibility(true)} >
-                <Text style={sharedStyles.dateButtonText} >Choose Date</Text>
+            {/* chooose month */}
+            <TouchableOpacity onPress={() => setDatePickerVisibility(true)} style={sharedStyles.dateButton} >
+                <Text style={sharedStyles.dateButtonText}>Choose Month</Text>
             </TouchableOpacity>
 
+      {/* month picker modal */}
+      <Modal
+        transparent
+        animationType="none"
+        visible={isDatePickerVisible}
+         >
+        <TouchableOpacity style={sharedStyles.contentContainer} onPressOut={() => setDatePickerVisibility(false)}>
+        <TouchableWithoutFeedback>
+            <View style={sharedStyles.content}>
+              <MonthPicker
+                selectedDate={selectedDate || new Date()}
+                onMonthChange={setSelectedDate}
+                swipable={true}
+              />
+              <TouchableOpacity
+                style={sharedStyles.confirmButton}
+                onPress={handleConfirm}>
+                <Text style={sharedStyles.dateButtonText}>Confirm</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableWithoutFeedback>
+        </TouchableOpacity>
+      </Modal>
+      
+      {/* selected month */}
+      <Text style={sharedStyles.selectedDate}>{ moment(date).format('MMM-YYYY') }</Text>   
+
+       {/* chart and net amounts */}
             <View style={styles.netContainer}>
                 <Text style={styles.netHeading}>Net Balance</Text>
                 <Text style={styles.netAmount}>{netInMonth.Income - netInMonth.Expense }</Text>
@@ -136,6 +162,7 @@ const Stat = () => {
                 }}
             />
             }
+
             <View style={formStyles.transboxContainer}>
                 <View style={formStyles.transbox}>
                         <AntDesign name="leftcircle" size={34} color="#FF3378" />
@@ -152,16 +179,6 @@ const Stat = () => {
                         </View>
                 </View>
             </View>
-             
-            <DateTimePickerModal
-                isVisible={isDatePickerVisible}
-                mode="date"
-                onConfirm={handleConfirm}
-                onCancel={hideDatePicker}
-                maximumDate={new Date()}
-                minimumDate={new Date(2021, 8, 1)}
-                date={date}
-            />
          
 
 </View>

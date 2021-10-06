@@ -1,27 +1,24 @@
 import React,{useState,useEffect} from 'react'
-import { StyleSheet, Text, View,TouchableOpacity,ScrollView,Image,ActivityIndicator} from 'react-native'
+import { StyleSheet, Text, View,TouchableOpacity,ScrollView,Image,ActivityIndicator,Modal,TouchableWithoutFeedback} from 'react-native'
 import homeStyles from '../styles/home';
 import { Ionicons } from '@expo/vector-icons';
 import { db,auth } from '../firebase/config'
 import moment from "moment";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import sharedStyles from "../styles/shared";
-
+import MonthPicker from 'react-native-month-picker';
 
 const Budget = ({navigation}) => {
     const [budgets,setBudgets] = useState([]);
     const [total,setTotal] = useState(0);
     const [date,setDate] = useState(new Date());
+    const [selectedDate,setSelectedDate] = useState();
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [loading, setLoading] = useState(false);
   
-    const hideDatePicker = () => {
-      setDatePickerVisibility(false);
-    };
   
-    const handleConfirm = (date) => {
-      setDate(date);
-      hideDatePicker();
+    const handleConfirm = () => {
+      setDate(selectedDate);
+      setDatePickerVisibility(false);
     };
 
     useEffect(() => {
@@ -53,13 +50,39 @@ const Budget = ({navigation}) => {
                         <Ionicons name="add" size={32} color="black" />
                 </TouchableOpacity>
             </View>
-            
-      {/* chooose date */}
-      <TouchableOpacity style={sharedStyles.dateButton}  onPress={() => setDatePickerVisibility(true)} >
-        <Text style={sharedStyles.dateButtonText} >Choose Date</Text>
+      
+      {/* choose month */}
+      <TouchableOpacity onPress={() => setDatePickerVisibility(true)} style={sharedStyles.dateButton} >
+          <Text style={sharedStyles.dateButtonText}>Choose Month</Text>
       </TouchableOpacity>
-        
-               
+
+      {/* month picker modal */}
+      <Modal
+        transparent
+        animationType="none"
+        visible={isDatePickerVisible}
+         >
+        <TouchableOpacity style={sharedStyles.contentContainer} onPressOut={() => setDatePickerVisibility(false)}>
+        <TouchableWithoutFeedback>
+            <View style={sharedStyles.content}>
+              <MonthPicker
+                selectedDate={selectedDate || new Date()}
+                onMonthChange={setSelectedDate}
+                swipable={true}
+              />
+              <TouchableOpacity
+                style={sharedStyles.confirmButton}
+                onPress={handleConfirm}>
+                <Text style={sharedStyles.dateButtonText}>Confirm</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableWithoutFeedback>
+        </TouchableOpacity>
+      </Modal>
+      
+      {/* selected month */}
+      <Text style={sharedStyles.selectedDate}>{ moment(date).format('MMM-YYYY') }</Text>        
+      
       { 
     loading 
       ?
@@ -108,16 +131,7 @@ const Budget = ({navigation}) => {
             <View style={styles.totalBudget}>
                <Text style={styles.totalBudgetHeading}>Current Budget :</Text>
                <Text style={styles.totalBudgetAmount}> Rs. {total}</Text>
-            </View>
-            <DateTimePickerModal
-                isVisible={isDatePickerVisible}
-                mode="date"
-                onConfirm={handleConfirm}
-                onCancel={hideDatePicker}
-                maximumDate={new Date()}
-                minimumDate={new Date(2021, 8, 1)}
-                date={date}
-            />         
+            </View>       
         </ScrollView>
     )
 }
@@ -136,7 +150,8 @@ const styles = StyleSheet.create({
     
       },
       budgetsContainer : {
-        padding: 20
+        padding: 20,
+        paddingVertical : 0
       },
       budget : {
           backgroundColor : '#ffffff',
@@ -180,5 +195,6 @@ const styles = StyleSheet.create({
       totalBudgetAmount : {
           fontWeight : 'bold',
           fontSize : 22, 
-      }
+      },
+ 
 })

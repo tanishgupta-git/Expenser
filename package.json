@@ -29,6 +29,7 @@
     "react-native-get-random-values": "^1.7.0",
     "react-native-modal": "^12.0.3",
     "react-native-modal-datetime-picker": "^11.0.0",
+    "react-native-month-picker": "^1.0.1",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
     "react-native-svg": "^12.1.1",

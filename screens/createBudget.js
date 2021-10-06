@@ -48,8 +48,14 @@ const CreateBudget = ({navigation}) => {
      }
       {
        !category 
-       &&   
+       ?  
        <QuestCategoryType submitCategory={submitCategory} titleShow={false}/>
+
+       : 
+        <View style={styles.inputsContainer}>
+            <Text style={formStyles.textInputLabel}>Category Choosen</Text>
+            <Text style={styles.categoryText}>{category}</Text>
+        </View>
       }
       <View style={styles.inputsContainer}>
         <View style={styles.titleContainer}>
@@ -103,9 +109,17 @@ export default CreateBudget;
 
 const styles = StyleSheet.create({
   inputsContainer : {
-      padding: 20
+      paddingHorizontal : 20,
+      paddingVertical : 10
   },
   titleContainer:{
       marginBottom : 30
+  },
+  categoryContainer : {
+    marginVertical : 10
+  },
+  categoryText : {
+    fontSize : 20,
+    fontWeight : 'bold'
   }
 });

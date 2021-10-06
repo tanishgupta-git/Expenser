@@ -180,7 +180,7 @@ const Profile = ({navigation}) => {
                     <Text style={styles.profileText}>{auth?.currentUser.displayName}</Text>
                 </View>
 
-                <View style={styles.profileLabel}>
+                <View style={styles.profileInfo}>
                     <Text style={styles.profileLabel}>Email</Text>
                     <Text style={styles.profileText}>{auth?.currentUser.email}</Text>
                 </View>
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
         alignItems : 'center'
     },
     profileInfo : {
-        marginVertical:25
+        marginVertical:10
     },
     profileLabel : {
         fontSize:16,

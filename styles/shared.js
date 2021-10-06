@@ -20,7 +20,6 @@ export default SharedStyles = StyleSheet.create({
         marginBottom : 20
       },
       dateButton : {
-        width: 150,
         backgroundColor : '#FF3378',
         padding: 15,
         borderRadius : 10,
@@ -32,5 +31,31 @@ export default SharedStyles = StyleSheet.create({
       dateButtonText : {
        color: '#FFFFFF',
        fontSize : 18
-      }
+      },
+      contentContainer: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+      },
+      content: {
+        backgroundColor: '#fff',
+        marginHorizontal: 20,
+        marginVertical: 70,
+      },
+      confirmButton: {
+        padding: 15,
+        margin: 10,
+        borderRadius: 5,
+        backgroundColor : '#FF3378',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      selectedDate : {
+        marginHorizontal : 20,
+        marginTop : 20,
+        fontSize : 16,
+        color:'#808080'
+      }, 
 });
