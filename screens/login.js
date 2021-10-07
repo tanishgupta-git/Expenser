@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import { Keyboard,Text, TextInput, TouchableWithoutFeedback, View,TouchableOpacity,StatusBar,Alert } from 'react-native'
+import { Keyboard,Text, TextInput, TouchableWithoutFeedback, View,TouchableOpacity,StatusBar,Alert,ActivityIndicator } from 'react-native'
 import DashSvg from '../components/dashSvg'
 import { AntDesign } from '@expo/vector-icons';
 import { auth } from '../firebase/config';
@@ -9,14 +9,18 @@ const Login = ({navigation}) => {
     const [iconDim, setIcondim] = useState({width:250,height:200});
     const [email,Setemail] = useState();
     const [password,Setpassword] = useState();
+    const [loading,setLoading] = useState(false);
 
     const handleSubmit = () => {
+      Keyboard.dismiss();
       if(!email || !password ) {
           Alert.alert("Enter email and password");
           return;
       }
+      setLoading(true)
       auth.signInWithEmailAndPassword(email, password)
       .catch((error) => {
+        setLoading(false);
         Alert.alert("email or password is incorrect");
       });
 
@@ -26,6 +30,7 @@ const Login = ({navigation}) => {
        useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(userAuth => {
             if (userAuth) {
+                setLoading(false);
                 navigation.replace('HomePage');
             }
         })
@@ -62,6 +67,12 @@ const Login = ({navigation}) => {
         <View style={styles.container}>
         
           <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+           
+          {loading && (
+          <View style={SharedStyles.loadingContainer}>
+            <ActivityIndicator size="large" color="#FF3378" />
+          </View>
+        )}
 
            <View style={styles.logHeader}>
                <Text style={styles.name}>Expenser</Text>

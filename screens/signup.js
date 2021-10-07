@@ -21,7 +21,7 @@ const Signup = ({navigation}) => {
          userCredential.user.updateProfile({ displayName: username })
       })
       .catch((error) => {
-        Alert.alert("Error in signup");
+        Alert.alert("Try with different email or try again later.");
       });
     }
 

@@ -13,7 +13,9 @@ const Profile = ({navigation}) => {
     const [imageLoading,setImageLoading] = useState(false);
     const [prevImageuuid,setPrevImageuuid] = useState(null);
     const [imageUploading,setImageUploading] = useState(false);
-    
+    const [logoutLLoading,setLogoutloading] = useState(false);
+
+
     // checking the permission
     useEffect(() => {
         async function checkPermission() {
@@ -32,7 +34,7 @@ const Profile = ({navigation}) => {
     // loading the intial data
     useEffect(() => {
       setImageLoading(true);
-      db.collection("usersimage").doc(auth?.currentUser.email).get().then( (doc) => {
+      db.collection("usersimage").doc(auth?.currentUser?.email).get().then( (doc) => {
    
           if(!!doc.data()) {
             setImage(doc.data().url);
@@ -43,7 +45,9 @@ const Profile = ({navigation}) => {
     },[])
     // funcition for logout
     const handleClick = async () => {
+        setLogoutloading(true);
         await auth.signOut();
+        setLogoutloading(false);
         navigation.navigate('Login');
     }
 
@@ -54,7 +58,7 @@ const Profile = ({navigation}) => {
           if (!pickerResult.cancelled) {
            
             const { uploadUrl,uuid } = await uploadImageAsync(pickerResult.uri);
-            await db.collection("usersimage").doc(auth?.currentUser.email).set({
+            await db.collection("usersimage").doc(auth?.currentUser?.email).set({
               url : uploadUrl,
               uuid : uuid
             })
@@ -130,6 +134,13 @@ const Profile = ({navigation}) => {
                 <Text style={homeStyles.headingPage}>Profile</Text>
             </View>
 
+            {/* activityindicator for loading logout */}
+            { logoutLLoading && (
+              <View style={SharedStyles.loadingContainer}>
+                <ActivityIndicator size="large" color="#FF3378" />
+              </View>
+            )}
+
             {
               imageUploading && 
               <View style={SharedStyles.loadingContainer}>
@@ -177,12 +188,12 @@ const Profile = ({navigation}) => {
 
                 <View style={styles.profileInfo}>
                     <Text style={styles.profileLabel}>Username</Text>
-                    <Text style={styles.profileText}>{auth?.currentUser.displayName}</Text>
+                    <Text style={styles.profileText}>{auth?.currentUser?.displayName ? auth?.currentUser?.displayName : "" }</Text>
                 </View>
 
                 <View style={styles.profileInfo}>
                     <Text style={styles.profileLabel}>Email</Text>
-                    <Text style={styles.profileText}>{auth?.currentUser.email}</Text>
+                    <Text style={styles.profileText}>{auth?.currentUser?.email}</Text>
                 </View>
                 <TouchableOpacity style={styles.logoutButton} onPress={handleClick}><Text style={styles.logoutbuttonText} >Logout</Text></TouchableOpacity>
             
