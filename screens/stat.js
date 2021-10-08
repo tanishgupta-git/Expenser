@@ -64,8 +64,8 @@ const Stat = () => {
 
             <View>
             {/* chooose month */}
-            <TouchableOpacity onPress={() => setDatePickerVisibility(true)} style={sharedStyles.dateButton} >
-                <Text style={sharedStyles.dateButtonText}>Choose Month</Text>
+            <TouchableOpacity onPress={() => setDatePickerVisibility(true)} style={{...sharedStyles.themeButton,marginHorizontal:10}} >
+                <Text style={sharedStyles.themeButtonText}>Choose Month</Text>
             </TouchableOpacity>
 
       {/* month picker modal */}

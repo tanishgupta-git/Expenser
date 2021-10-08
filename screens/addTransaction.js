@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {StatusBar,Text,TouchableOpacity,View,Keyboard,TouchableWithoutFeedback,Image,ActivityIndicator,} from "react-native";
+import {StatusBar,Text,TouchableOpacity,View,Keyboard,TouchableWithoutFeedback,Image,ActivityIndicator,Alert} from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import SharedStyles from "../styles/shared";
@@ -26,6 +26,10 @@ const AddTransaction = ({ navigation }) => {
 
   const submitHandler = async () => {
     Keyboard.dismiss();
+    if( Number(amount) < 0 ) {
+      Alert.alert("Please enter a positive amount");
+      return;
+    }
     const user = auth?.currentUser?.email;
     const date = moment(new Date()).format("DD-MMM");
     const yearMonth = moment(new Date()).format("YYYY-MMM")
@@ -41,7 +45,7 @@ const AddTransaction = ({ navigation }) => {
       .add({
         title: transTitle,
         category: category,
-        amount,
+        amount : Number(amount),
         type: typeTrans,
         timeStamp : firebase.firestore.FieldValue.serverTimestamp()
       });
@@ -76,6 +80,9 @@ const AddTransaction = ({ navigation }) => {
     })
     navigation.replace("TransDetail", {
       id: docRef.id,
+      transDate : moment(new Date()).format("DD-MMM"),
+      transMonth: moment(new Date()).format("YYYY-MMM"),
+      editShow : true
     });
 
     

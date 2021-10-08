@@ -1,9 +1,11 @@
 import React from 'react'
-import { StyleSheet, Text, View,Image } from 'react-native'
+import { StyleSheet, Text, View,Image,TouchableOpacity } from 'react-native'
 
-const Transaction = ({transaction}) => {
+const Transaction = ({transaction,id,onClickTransaction}) => {
+
+
     return (
-        <View style={styles.transaction}>
+        <TouchableOpacity style={styles.transaction} onPress={() => onClickTransaction(id)}>
             <View style={styles.transactionSubcontainer}>
                     <View style={styles.transimageContainer}>
                     {transaction.category === "Bank" ? (
@@ -21,8 +23,10 @@ const Transaction = ({transaction}) => {
                     <Text style={styles.transactionTitle}>{transaction.title}</Text>
             </View>
                 <Text style={ transaction.type === 'Income' ? styles.transactionIncome : styles.transactionExpense}>Rs. {transaction.amount}</Text>
-      </View>
+      </TouchableOpacity>
     )
+
+
 }
 
 export default Transaction
@@ -35,6 +39,8 @@ const styles = StyleSheet.create({
         paddingVertical:15,
         marginHorizontal:15,
         borderBottomWidth:1,
+        borderTopWidth : 1,
+        borderTopColor : '#F1F1F1',
         borderBottomColor : '#F1F1F1'
       },
       transimage: {

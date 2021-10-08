@@ -3,6 +3,7 @@ import { Text, View,TextInput,TouchableOpacity } from "react-native";
 import styles from '../styles/form';
 
 const QuestAmount = ({amount,submitHandler,setAmount}) => {
+ 
   return (
     <View style={styles.inputFormContainer}>
       <View style={styles.textInputContainer}>
@@ -12,7 +13,7 @@ const QuestAmount = ({amount,submitHandler,setAmount}) => {
           placeholder="Amount in Rs."
           placeholderTextColor="#DFE0E3"
           onChangeText={(value) => setAmount(value)}
-          value={amount}
+          value={amount?.toString()}
           keyboardType="numeric"
           autoFocus
         />

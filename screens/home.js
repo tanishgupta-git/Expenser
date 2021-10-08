@@ -7,10 +7,12 @@ import moment from "moment";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Transaction from "../components/transaction";
 
-const Home = ({ navigation }) => {
+const Home = ({ navigation,route }) => {
+
+  const prevDate = route.params?.date ? route.params.date : new Date();
   const [transactions, setTransactions] = useState([]);
   const [total, setTotal] = useState(0);
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(prevDate);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -22,6 +24,15 @@ const Home = ({ navigation }) => {
     setDate(date);
     hideDatePicker();
   };
+
+  const onClickTransaction = (id) => {
+       navigation.navigate("TransDetail", {
+        id: id,
+        transDate : moment(date).format("DD-MMM"),
+        transMonth: moment(date).format("YYYY-MMM"),
+        editShow : false
+      })
+  }
 
   useEffect(() => {
     let unsubscribe,unsubscribe2;
@@ -68,8 +79,8 @@ const Home = ({ navigation }) => {
 
 
       {/* chooose date */}
-      <TouchableOpacity style={sharedStyles.dateButton}  onPress={() => setDatePickerVisibility(true)} >
-        <Text style={sharedStyles.dateButtonText} >Choose Date</Text>
+      <TouchableOpacity style={{...sharedStyles.themeButton,marginHorizontal:10}}  onPress={() => setDatePickerVisibility(true)} >
+        <Text style={sharedStyles.themeButtonText} >Choose Date</Text>
       </TouchableOpacity>
 
     {/* loader Container */}
@@ -78,7 +89,8 @@ const Home = ({ navigation }) => {
       )}
 
       {/* list transactions on that date */}
-      <View>
+      <View >
+      <Text style={styles.currentDate}>{moment(date).format("DD-MMM-YYYY")}</Text>
        {
          !transactions.length &&
           <View style={styles.noTransactions}>
@@ -87,7 +99,7 @@ const Home = ({ navigation }) => {
        }
         {
               transactions.map((transaction) => (
-                   <Transaction key={transaction.id} transaction={transaction} />
+                   <Transaction key={transaction.id} transaction={transaction} id={transaction.id} onClickTransaction={onClickTransaction} />
             ))
         }
         
@@ -122,6 +134,12 @@ const styles = StyleSheet.create({
     fontSize:18,
     color: '#ADAEB4'
 
+  },
+  currentDate : {
+    marginVertical : 20,
+    paddingHorizontal: 20,
+    fontSize : 18,
+    color: '#808080'
   },
   totalContainer : {
     flexDirection : 'row',
