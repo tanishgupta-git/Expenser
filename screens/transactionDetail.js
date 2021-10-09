@@ -78,19 +78,11 @@ const TransactionDetail = ({ navigation, route }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+      <TouchableOpacity  style={{marginHorizontal:20,marginVertical:20}} onPress={() => navigation.goBack()}>
         <Text>
           <Entypo name="cross" size={40} color="#404040" />
         </Text>
       </TouchableOpacity>
-
-      {
-            loading && (
-                <View style={SharedStyles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#FF3378" />
-                </View>
-            )
-      }
 
 
       {/* if added on same day than edit that transaction */}      
@@ -161,6 +153,14 @@ const TransactionDetail = ({ navigation, route }) => {
         </TouchableOpacity>
 
       </View>
+      {
+            loading && (
+                <View style={SharedStyles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#FF3378" />
+                </View>
+            )
+      }
+
     </ScrollView>
   );
 };
@@ -170,7 +170,6 @@ export default TransactionDetail;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: "#FCFCFC",
   },
   congoImage: {
@@ -196,7 +195,7 @@ const styles = StyleSheet.create({
   },
   transDetails: {
     backgroundColor: "#ffffff",
-    elevation: 1,
+
     borderRadius: 15,
     padding: 25,
     marginVertical : 20
