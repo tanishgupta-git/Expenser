@@ -6,6 +6,7 @@ import HomeStyles from '../styles/home';
 import QuestAmount from '../components/questAmount';
 import formStyles from '../styles/form';
 import SharedStyles from '../styles/shared';
+import UpdateWithNewTransaction from '../utils/updateWithNewTransaction';
 
 const EditTransaction = ({navigation,route}) => {
 
@@ -56,36 +57,10 @@ const EditTransaction = ({navigation,route}) => {
               title : transTitle,
               amount : Number(newAmount),
           })
-         
-     // getting the previous amount for next update
-    const prevAmountDoc = await db
-    .collection("expenses")
-    .doc(user)
-    .collection(transMonth)
-    .doc(transDate)
-    .get()
+    
+    // updating the other document in databse accroding to this transaction
+    await UpdateWithNewTransaction(user,transMonth,transDate,detail.type,Number(newAmount) - detail.amount)
 
-    // if added for first time then intialized it with zero 
-    let Income = prevAmountDoc.data().income;
-    let Expense = prevAmountDoc.data().expense;
-
-    // update the new values
-    if (detail.type === 'Income') {
-       Income = Income + Number(newAmount) - detail.amount;
-    }else {
-       Expense = Expense + Number(newAmount) - detail.amount;
-    }
-
-    //  updating the document with new amount value
-    await db.collection("expenses")
-    .doc(user)
-    .collection(transMonth)
-    .doc(transDate)
-    .set({
-      income : Income,
-      expense : Expense,
-      total : Income - Expense
-    })
     setLoading(false); 
 
     navigation.navigate("TransDetail", {

@@ -38,7 +38,7 @@ const CreateBudget = ({navigation}) => {
   };
 
   return (
-    <View style={formStyles.container}>
+    <View style={styles.container}>
 
      { uploading && (
                 <View style={SharedStyles.loadingContainer}>
@@ -49,58 +49,62 @@ const CreateBudget = ({navigation}) => {
       {
        !category 
        ?  
-       <QuestCategoryType submitCategory={submitCategory} titleShow={false}/>
+       <QuestCategoryType submitCategory={submitCategory} />
 
        : 
-        <View style={styles.inputsContainer}>
-            <Text style={formStyles.textInputLabel}>Category Choosen</Text>
-            <Text style={styles.categoryText}>{category}</Text>
+       <View>
+                <View style={styles.inputsContainer}>
+                    <Text style={formStyles.textInputLabel}>Category Choosen</Text>
+                    <Text style={styles.categoryText}>{category}</Text>
+                </View>
+                <View style={styles.inputsContainer}>
+                <View style={styles.titleContainer}>
+                  <Text style={formStyles.textInputLabel}>Budget Name</Text>
+                  <TextInput
+                    style={formStyles.textInput}
+                    placeholder="Enter Budget Name"
+                    placeholderTextColor="#DFE0E3"
+                    onChangeText={(value) => setTitle(value)}
+                    value={title}
+                  />
+                </View>
+
+                <View style={formStyles.inputFormContainer}>
+                  <View style={formStyles.textInputContainer}>
+                    <Text style={formStyles.textInputLabel}>Enter Amount</Text>
+                    <TextInput
+                      style={formStyles.textInput}
+                      placeholder="Amount in Rs."
+                      placeholderTextColor="#DFE0E3"
+                      onChangeText={(value) => setAmount(value)}
+                      value={amount}
+                      keyboardType="numeric"
+                    />
+                  </View>
+                  <TouchableOpacity
+                    onPress={submitHandler}
+                    style={
+                      amount
+                        ? formStyles.formsubmitButton
+                        : {
+                            ...formStyles.formsubmitButton,
+                            backgroundColor: "#CFD4E6",
+                          }
+                    }
+                    disabled={!amount}
+                  >
+                    <Text style={formStyles.amountButtontext}>
+                      <Text>
+                        <AntDesign name="right" size={20} color="#ffffff" />
+                      </Text>
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
         </View>
       }
-      <View style={styles.inputsContainer}>
-        <View style={styles.titleContainer}>
-          <Text style={formStyles.textInputLabel}>Budget Name</Text>
-          <TextInput
-            style={formStyles.textInput}
-            placeholder="Enter Budget Name"
-            placeholderTextColor="#DFE0E3"
-            onChangeText={(value) => setTitle(value)}
-            value={title}
-          />
-        </View>
 
-        <View style={formStyles.inputFormContainer}>
-          <View style={formStyles.textInputContainer}>
-            <Text style={formStyles.textInputLabel}>Enter Amount</Text>
-            <TextInput
-              style={formStyles.textInput}
-              placeholder="Amount in Rs."
-              placeholderTextColor="#DFE0E3"
-              onChangeText={(value) => setAmount(value)}
-              value={amount}
-              keyboardType="numeric"
-            />
-          </View>
-          <TouchableOpacity
-            onPress={submitHandler}
-            style={
-              amount
-                ? formStyles.formsubmitButton
-                : {
-                    ...formStyles.formsubmitButton,
-                    backgroundColor: "#CFD4E6",
-                  }
-            }
-            disabled={!amount}
-          >
-            <Text style={formStyles.amountButtontext}>
-              <Text>
-                <AntDesign name="right" size={20} color="#ffffff" />
-              </Text>
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
     </View>
   );
 };
@@ -108,6 +112,11 @@ const CreateBudget = ({navigation}) => {
 export default CreateBudget;
 
 const styles = StyleSheet.create({
+  container : {
+    flex: 1,
+    backgroundColor : '#FCFCFC',
+    paddingTop:20
+  },
   inputsContainer : {
       paddingHorizontal : 20,
       paddingVertical : 10

@@ -30,7 +30,7 @@ const Stat = () => {
         setChartLoading(true);
         const user = auth?.currentUser?.email;
         const expYearMonth = moment(date).format("YYYY-MMM");
-        db.collection("expenses").doc(user).collection(expYearMonth).get().then((snap) => {
+        db.collection("expenses").doc(user).collection(expYearMonth).onSnapshot((snap) => {
            const DateTransArray = snap.docs.map((doc) => ({id : doc.id,...doc.data() }));
            let netIncome = 0;
            let netExpense = 0;

@@ -27,7 +27,7 @@ const Budget = ({navigation}) => {
         
         setLoading(true);
          db.collection("budgets").doc(user).collection(expYearMonth).doc("budget").collection("budgets").orderBy('timeStamp','desc')
-        .get().then((snap) => {
+        .onSnapshot((snap) => {
             setBudgets(
               snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
             );

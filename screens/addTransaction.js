@@ -11,6 +11,7 @@ import QuestTransType from "../components/questTransType";
 import QuestPayeeName from "../components/questPayeeName";
 import QuestCategoryType from "../components/questCategoryType";
 import QuestAmount from "../components/questAmount";
+import UpdateWithNewTransaction from "../utils/updateWithNewTransaction";
 
 const AddTransaction = ({ navigation }) => {
   const [typeTrans, setTypeTrans] = useState();
@@ -49,35 +50,10 @@ const AddTransaction = ({ navigation }) => {
         type: typeTrans,
         timeStamp : firebase.firestore.FieldValue.serverTimestamp()
       });
- 
-    // getting the previous amount for next update
-    const prevAmountDoc = await db
-    .collection("expenses")
-    .doc(user)
-    .collection(yearMonth)
-    .doc(date)
-    .get()
+     
+    // updating the other document in databse accroding to this transaction
+    await UpdateWithNewTransaction(user,yearMonth,date,typeTrans,Number(amount)) 
 
-    // if added for first time then intialized it with zero 
-    let Income = (prevAmountDoc.data()?.income) ? prevAmountDoc.data().income : 0;
-    let Expense = (prevAmountDoc.data()?.expense) ? prevAmountDoc.data().expense : 0;
-    // update the new values
-    if (typeTrans === 'Income') {
-       Income = Income + Number(amount);
-    }else {
-       Expense = Expense + Number(amount)
-    }
-
-    //  updating the document with new amount value
-    await db.collection("expenses")
-    .doc(user)
-    .collection(yearMonth)
-    .doc(date)
-    .set({
-      income : Income,
-      expense : Expense,
-      total : Income - Expense
-    })
     navigation.replace("TransDetail", {
       id: docRef.id,
       transDate : moment(new Date()).format("DD-MMM"),
@@ -162,7 +138,7 @@ const AddTransaction = ({ navigation }) => {
               )}
               {/* third question  */}
               {thirdQuestion && !category && (
-                <QuestCategoryType submitCategory={submitCategory} titleShow={true}/>
+                <QuestCategoryType submitCategory={submitCategory} />
               )}
 
               {/* fourth question */}

@@ -13,19 +13,11 @@ const TransactionDetail = ({ navigation, route }) => {
   useEffect(() => {
     const user = auth?.currentUser?.email;
     setLoading(true);
-    db.collection("expenses")
-      .doc(user)
-      .collection(transMonth)
-      .doc(transDate)
-      .collection("transactions")
-      .doc(id)
-      .get()
-      .then((doc) => {
+    db.collection("expenses").doc(user).collection(transMonth).doc(transDate).collection("transactions").doc(id).get()
+    .then((doc) => {
         setDetail({ ...doc.data() });
         setLoading(false);
       });
-      
-
 
   }, [route]);
 
