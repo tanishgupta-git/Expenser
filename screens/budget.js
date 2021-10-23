@@ -6,6 +6,8 @@ import { db,auth } from '../firebase/config'
 import moment from "moment";
 import sharedStyles from "../styles/shared";
 import MonthPicker from 'react-native-month-picker';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 
 const Budget = ({navigation}) => {
     const [budgets,setBudgets] = useState([]);
@@ -40,7 +42,17 @@ const Budget = ({navigation}) => {
     },[date])
 
 
+    const deleteBudget = (id) => {
+    // db code goes here
+    setLoading(true)
+    const user = auth?.currentUser?.email;
+    const expYearMonth = moment(date).format("YYYY-MMM");
+    db.collection("budgets").doc(user).collection(expYearMonth).doc("budget").collection("budgets").doc(id)
+    .delete().then(() => {
+       setLoading(false);
+    })
 
+    }
 
     return (
         <ScrollView style={homeStyles.container}>
@@ -96,23 +108,29 @@ const Budget = ({navigation}) => {
                     {
                         budgets.map( budget => (
                             <View  style={styles.budget} key={budget.id}>
+                            <View style={styles.budgetRight}>
                                 <View>
                                     <Text style={styles.budgetTitle}>{budget.title}</Text>
                                     <Text style={styles.budgetAmount}>Rs. {budget.amount}</Text>
                                 </View>
-                            <View style={styles.budgimageContainer}>
-                                    {budget.category === "Bank" ? (
-                                        <Image
-                                        style={styles.budgimage}
-                                        source={require("../assets/bank.png")}
-                                        />
-                                    ) : (
-                                        <Image
-                                        style={styles.budgimage}
-                                        source={require("../assets/cash.png")}
-                                        />
-                                    )}
+                                <View style={styles.roundContainer}>
+                                          {budget.category === "Bank" ? (
+                                              <Image
+                                              style={styles.budgimage}
+                                              source={require("../assets/bank.png")}
+                                              />
+                                          ) : (
+                                              <Image
+                                              style={styles.budgimage}
+                                              source={require("../assets/cash.png")}
+                                              />
+                                          )}
+                                  </View>
                             </View>
+                                  <TouchableOpacity style={styles.roundContainer} onPress={() => deleteBudget(budget.id)}>
+                                        <MaterialCommunityIcons name="delete-outline" size={24} color="#808080" />   
+                                  </TouchableOpacity>
+                           
                             </View>
                         ))
                         }
@@ -170,13 +188,17 @@ const styles = StyleSheet.create({
         fontSize:20,
         fontWeight : 'bold'
       },
-      budgimageContainer: {
+      budgetRight:{
+        flexDirection:'row'
+      },
+      roundContainer: {
         width: 50,
         height: 50,
         backgroundColor: "#F3F3F4",
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 30,
+        marginLeft:10
       },
       budgimage: {
         width: 30,
